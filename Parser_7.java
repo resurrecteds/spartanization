@@ -16,16 +16,6 @@ import java.util.Properties;
  * @version $Revision: 551815 $
  */
 public abstract class Parser_7 implements CommandLineParser{
-
-    /** commandline instance */
-    private CommandLine cmd;
-
-    /** current Options */
-//    private Options options;
-
-    /** list of required options strings */
-    private List requiredOptions;
-
     /**
      * <p>Subclasses must implement this method to reduce
      * the <code>arguments</code> that have been passed to the parse 
@@ -122,16 +112,19 @@ public abstract class Parser_7 implements CommandLineParser{
         for (Object object : arguments)
 			((Option)object).clearValues();
         
-        cmd = new CommandLine();
+        /** commandline instance */
+        CommandLine cmd = new CommandLine();
         String str;
         
         if (arguments == null)
-            arguments = new String[0];
+        	arguments = new String[0];
 
         List tokenList = Arrays.asList(flatten(options, 
                                                arguments, 
                                                stopAtNonOption));
-
+        
+        /** list of required options strings */
+        List requiredOptions = options.getRequiredOptions();
         ListIterator iterator = tokenList.listIterator();
         // process each flattened token  
         while (iterator.hasNext()) {
@@ -256,7 +249,7 @@ public abstract class Parser_7 implements CommandLineParser{
 			}
         }
         
-        requiredOptions = options.getRequiredOptions();
+        
         if (requiredOptions.size() > 0) {
             str = requiredOptions.size() > 1 ? "Missing required options:" : "Missing required option:";
             // loop through the required options
