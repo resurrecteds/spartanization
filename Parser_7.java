@@ -158,7 +158,72 @@ public abstract class Parser_7 implements CommandLineParser{
                     cmd.addArg(t);
                     break;
                 }
-                processOption(t, iterator);
+//                processOption(t, iterator);
+                ListIterator iter = iterator;
+                String arg = t;
+                //*********/
+                boolean hasOption = options.hasOption(arg);
+
+                // if there is no option throw an UnrecognisedOptionException
+                if (!hasOption) {
+                    throw new UnrecognizedOptionException("Unrecognized option: " 
+                                                          + arg);
+                }
+                
+                // get the option represented by arg
+                final Option opt = options.getOption(arg);
+
+                // if the option is a required option remove the option from
+                // the requiredOptions list
+                if (opt.isRequired()) {
+                    requiredOptions.remove(opt.getKey());
+                }
+
+                // if the option is in an OptionGroup make that option the selected
+                // option of the group
+                OptionGroup group = options.getOptionGroup(opt);
+                if (group != null) {
+                    if (group.isRequired()) {
+                        requiredOptions.remove(group);
+                    }
+
+                    group.setSelected(opt);
+                }
+
+                // if the option takes an argument value
+                if (!opt.hasArg()) {
+                	cmd.addOption(opt);
+                	continue;
+				}
+//                    processArgs(opt, iter);
+            	while (iter.hasNext()) {
+                    String str = (String) iter.next();
+
+                    // found an Option, not an argument
+                    if (options.hasOption(str) && str.startsWith("-")) {
+                        iter.previous();
+                        break;
+                    }
+
+                    // found a value
+                    try {
+                        opt.addValueForProcessing( Util.stripLeadingAndTrailingQuotes(str) );
+                    }
+                    catch (RuntimeException exp) {
+                        iter.previous();
+                        break;
+                    }
+                }
+
+                if ((opt.getValues() == null) && !opt.hasOptionalArg()) {
+                    throw new MissingArgumentException("Missing argument for option:"
+                                                       + opt.getKey());
+                }
+
+
+                // set the option on the command line
+                cmd.addOption(opt);
+                //**********/
                 continue;
             }
 
@@ -182,7 +247,10 @@ public abstract class Parser_7 implements CommandLineParser{
 
         // TODO - remove this method too
 //        processProperties(properties);
-        if (properties != null) {
+        if (properties == null) {
+			// TODO
+		}
+        else {
 	        for (Enumeration e = properties.propertyNames(); e.hasMoreElements();) {
 	            String option = e.nextElement().toString();
 	
@@ -193,23 +261,16 @@ public abstract class Parser_7 implements CommandLineParser{
 	                String value = properties.getProperty(option);
 	
 	                if (opt.hasArg()) {
-	                    if ((opt.getValues() == null)
-	                        || (opt.getValues().length == 0)) {
-	                        try {
-	                            opt.addValueForProcessing(value);
-	                        }
-	                        catch (RuntimeException exp) {
-	                            // if we cannot add the value don't worry about it
-	                        }
+	                    if (opt.getValues() == null || opt.getValues().length == 0) {
+                        	opt.addValueForProcessing(value);
 	                    }
 	                }
-	                else if (!("yes".equalsIgnoreCase(value) 
-	                           || "true".equalsIgnoreCase(value)
-	                           || "1".equalsIgnoreCase(value))) {
+	                
+	                if (!value.toLowerCase().matches("yes|true|1")) {
 	                    // if the value is not yes, true or 1 then don't add the
 	                    // option to the CommandLine
-	                    break;
-	                }
+						break;
+					}
 	
 	                cmd.addOption(opt);
 	            }
@@ -358,67 +419,67 @@ public abstract class Parser_7 implements CommandLineParser{
      * @throws ParseException if <code>arg</code> does not
      * represent an Option
      */
-    private void processOption(String arg, ListIterator iter)
-        throws ParseException {
-        boolean hasOption = options.hasOption(arg);
-
-        // if there is no option throw an UnrecognisedOptionException
-        if (!hasOption) {
-            throw new UnrecognizedOptionException("Unrecognized option: " 
-                                                  + arg);
-        }
-        
-        // get the option represented by arg
-        final Option opt = options.getOption(arg);
-
-        // if the option is a required option remove the option from
-        // the requiredOptions list
-        if (opt.isRequired()) {
-            requiredOptions.remove(opt.getKey());
-        }
-
-        // if the option is in an OptionGroup make that option the selected
-        // option of the group
-        OptionGroup group = options.getOptionGroup(opt);
-        if (group != null) {
-            if (group.isRequired()) {
-                requiredOptions.remove(group);
-            }
-
-            group.setSelected(opt);
-        }
-
-        // if the option takes an argument value
-        if (opt.hasArg()) {
-//            processArgs(opt, iter);
-        	while (iter.hasNext()) {
-                String str = (String) iter.next();
-
-                // found an Option, not an argument
-                if (options.hasOption(str) && str.startsWith("-")) {
-                    iter.previous();
-                    break;
-                }
-
-                // found a value
-                try {
-                    opt.addValueForProcessing( Util.stripLeadingAndTrailingQuotes(str) );
-                }
-                catch (RuntimeException exp) {
-                    iter.previous();
-                    break;
-                }
-            }
-
-            if ((opt.getValues() == null) && !opt.hasOptionalArg()) {
-                throw new MissingArgumentException("Missing argument for option:"
-                                                   + opt.getKey());
-            }
-        }
-
-
-        // set the option on the command line
-        cmd.addOption(opt);
-    }
+//    private void processOption(String arg, ListIterator iter)
+//        throws ParseException {
+//        boolean hasOption = options.hasOption(arg);
+//
+//        // if there is no option throw an UnrecognisedOptionException
+//        if (!hasOption) {
+//            throw new UnrecognizedOptionException("Unrecognized option: " 
+//                                                  + arg);
+//        }
+//        
+//        // get the option represented by arg
+//        final Option opt = options.getOption(arg);
+//
+//        // if the option is a required option remove the option from
+//        // the requiredOptions list
+//        if (opt.isRequired()) {
+//            requiredOptions.remove(opt.getKey());
+//        }
+//
+//        // if the option is in an OptionGroup make that option the selected
+//        // option of the group
+//        OptionGroup group = options.getOptionGroup(opt);
+//        if (group != null) {
+//            if (group.isRequired()) {
+//                requiredOptions.remove(group);
+//            }
+//
+//            group.setSelected(opt);
+//        }
+//
+//        // if the option takes an argument value
+//        if (opt.hasArg()) {
+////            processArgs(opt, iter);
+//        	while (iter.hasNext()) {
+//                String str = (String) iter.next();
+//
+//                // found an Option, not an argument
+//                if (options.hasOption(str) && str.startsWith("-")) {
+//                    iter.previous();
+//                    break;
+//                }
+//
+//                // found a value
+//                try {
+//                    opt.addValueForProcessing( Util.stripLeadingAndTrailingQuotes(str) );
+//                }
+//                catch (RuntimeException exp) {
+//                    iter.previous();
+//                    break;
+//                }
+//            }
+//
+//            if ((opt.getValues() == null) && !opt.hasOptionalArg()) {
+//                throw new MissingArgumentException("Missing argument for option:"
+//                                                   + opt.getKey());
+//            }
+//        }
+//
+//
+//        // set the option on the command line
+//        cmd.addOption(opt);
+//    }
 
 }
