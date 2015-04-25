@@ -260,12 +260,9 @@ public abstract class Parser_7 implements CommandLineParser{
 	                // get the value from the properties instance
 	                String value = properties.getProperty(option);
 	
-	                if (opt.hasArg()) {
-	                    if (opt.getValues() == null || opt.getValues().length == 0) {
-                        	opt.addValueForProcessing(value);
-	                    }
-	                }
-	                
+                    if (opt.hasArg() && (opt.getValues() == null || opt.getValues().length == 0)) {
+                    	opt.addValueForProcessing(value);
+                    }                
 	                if (!value.toLowerCase().matches("yes|true|1")) {
 	                    // if the value is not yes, true or 1 then don't add the
 	                    // option to the CommandLine
