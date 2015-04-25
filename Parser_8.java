@@ -7,6 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * <p><code>Parser_8</code> creates {@link CommandLine}s.</p>
@@ -126,6 +130,14 @@ public abstract class Parser_8 implements CommandLineParser{
         /** list of required options strings */
         List requiredOptions = options.getRequiredOptions();
         ListIterator iterator = tokenList.listIterator();
+        
+        // JS ADDED spliterator
+        Stream<String> stream = 
+        		StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
+        
+        // TODO: continue here
+//        stream.forEach(str -> ((String)str));
+        
         // process each flattened token  
         while (iterator.hasNext()) {
             str = (String) iterator.next();
