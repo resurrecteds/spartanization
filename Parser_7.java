@@ -21,7 +21,7 @@ public abstract class Parser_7 implements CommandLineParser{
     private CommandLine cmd;
 
     /** current Options */
-    private Options options;
+//    private Options options;
 
     /** list of required options strings */
     private List requiredOptions;
@@ -117,7 +117,7 @@ public abstract class Parser_7 implements CommandLineParser{
         throws ParseException
     {
         // initialise members
-        this.options = options;
+//        this.options = options;
         // clear out the data in options in case it's been used before (CLI-71)
         for (Object object : arguments)
 			((Option)object).clearValues();
@@ -128,7 +128,7 @@ public abstract class Parser_7 implements CommandLineParser{
         if (arguments == null)
             arguments = new String[0];
 
-        List tokenList = Arrays.asList(flatten(this.options, 
+        List tokenList = Arrays.asList(flatten(options, 
                                                arguments, 
                                                stopAtNonOption));
 
@@ -156,8 +156,6 @@ public abstract class Parser_7 implements CommandLineParser{
                     cmd.addArg(str);
                     break;
                 }
-//                processOption(t, iterator);
-                //*********/
 
                 // if there is no option throw an UnrecognisedOptionException
                 if (!options.hasOption(str))
