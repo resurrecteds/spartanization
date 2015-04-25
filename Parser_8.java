@@ -9,14 +9,14 @@ import java.util.ListIterator;
 import java.util.Properties;
 
 /**
- * <p><code>Parser_7</code> creates {@link CommandLine}s.</p>
+ * <p><code>Parser_8</code> creates {@link CommandLine}s.</p>
  *
  * @author John Keyes (john at integralsource.com)
- * @see Parser_7
+ * @see Parser_8
  * @version $Revision: 551815 $
  */
-public abstract class Parser_7 implements CommandLineParser{
-    /**
+public abstract class Parser_8 implements CommandLineParser{
+	/**
      * <p>Subclasses must implement this method to reduce
      * the <code>arguments</code> that have been passed to the parse 
      * method.</p>
@@ -109,8 +109,8 @@ public abstract class Parser_7 implements CommandLineParser{
         // initialise members
 //        this.options = options;
         // clear out the data in options in case it's been used before (CLI-71)
-        for (Object object : options.helpOptions())
-			((Option)object).clearValues();
+    	
+    	options.helpOptions().forEach(x -> ((Option)x).clearValues());
         
         /** commandline instance */
         CommandLine cmd = new CommandLine();
