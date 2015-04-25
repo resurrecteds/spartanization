@@ -192,7 +192,7 @@ public abstract class Parser_7 implements CommandLineParser{
 				}
 //                    processArgs(opt, iter);
             	while (iter.hasNext()) {
-                    String str = (String) iter.next();
+                    str = (String) iter.next();
 
                     // found an Option, not an argument
                     if (options.hasOption(str) && str.startsWith("-")) {
@@ -230,7 +230,7 @@ public abstract class Parser_7 implements CommandLineParser{
         
         // eat the remaining tokens
         while (iterator.hasNext()) {
-            String str = (String) iterator.next();
+            str = (String) iterator.next();
 
             // ensure only one double-dash is added
             if (!"--".equals(str))
@@ -263,11 +263,11 @@ public abstract class Parser_7 implements CommandLineParser{
         
         requiredOptions = options.getRequiredOptions();
         if (requiredOptions.size() > 0) {
-            String s = requiredOptions.size() > 1 ? "Missing required options:" : "Missing required option:";
+            str = requiredOptions.size() > 1 ? "Missing required options:" : "Missing required option:";
             // loop through the required options
             for (Object object : requiredOptions)
-				s += object.toString();
-            throw new MissingOptionException(s);
+				str += object.toString();
+            throw new MissingOptionException(str);
         }
 
         return cmd;
