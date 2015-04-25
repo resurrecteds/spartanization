@@ -1,6 +1,7 @@
 package org.apache.commons.cli;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -245,16 +246,11 @@ public abstract class Parser_7 implements CommandLineParser{
             }
         }
 
-        // TODO - remove this method too
-//        processProperties(properties);
-        if (properties == null) {
-			// TODO
-		}
-        else {
-	        for (Enumeration e = properties.propertyNames(); e.hasMoreElements();) {
-	            String option = e.nextElement().toString();
-	
-	            if (!cmd.hasOption(option)) {
+        // TODO - remove this method too: // processProperties(properties);
+        if (properties != null) {
+        	for (Object object : Collections.list(properties.propertyNames())) {
+				String option = (String)object;
+				if (!cmd.hasOption(option)) {
 	                Option opt = options.getOption(option);
 	
 	                // get the value from the properties instance
@@ -271,7 +267,7 @@ public abstract class Parser_7 implements CommandLineParser{
 	
 	                cmd.addOption(opt);
 	            }
-	        }
+			}
         }
         
         requiredOptions = options.getRequiredOptions();
