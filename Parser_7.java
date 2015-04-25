@@ -119,13 +119,11 @@ public abstract class Parser_7 implements CommandLineParser{
         // initialise members
         this.options = options;
         // clear out the data in options in case it's been used before (CLI-71)
-        for (Iterator it = options.helpOptions().iterator(); it.hasNext();) {
-            Option opt = (Option) it.next();
-            opt.clearValues();
-        }
-
+        for (Object object : arguments) {
+			((Option)object).clearValues();
+		}
         cmd = new CommandLine();
-
+        String str;
         if (arguments == null) {
             arguments = new String[0];
         }
@@ -272,19 +270,12 @@ public abstract class Parser_7 implements CommandLineParser{
         
         requiredOptions = options.getRequiredOptions();
         if (requiredOptions.size() > 0) {
-            StringBuffer buff = new StringBuffer("Missing required option:");
-            if (requiredOptions.size() > 1) {
-            	buff = new StringBuffer("Missing required options:");
-            }
-            
-            Iterator iter = requiredOptions.iterator();
+            String s = requiredOptions.size() > 1 ? "Missing required options:" : "Missing required option:";
             // loop through the required options
-            while (iter.hasNext()) {
-                buff.append(iter.next());
-            }
-
-            throw new MissingOptionException(buff.toString());
-        }// some stupid comments
+            for (Object object : requiredOptions)
+				s += object.toString();
+            throw new MissingOptionException(s);
+        }
 
         return cmd;
     }
