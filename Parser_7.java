@@ -135,40 +135,38 @@ public abstract class Parser_7 implements CommandLineParser{
         ListIterator iterator = tokenList.listIterator();
         // process each flattened token  
         while (iterator.hasNext()) {
-            String t = (String) iterator.next();
+            str = (String) iterator.next();
 
             // the value is the double-dash
-            if ("--".equals(t))
+            if ("--" == str)
                 break;
 
             // the value is a single dash
-            if ("-".equals(t)) {
+            if ("-" == str) {
                 if (stopAtNonOption)
                     break;
                 
-                cmd.addArg(t);
+                cmd.addArg(str);
                 continue;
             }
             
             // the value is an option
-            if (t.startsWith("-")) {
-                if (stopAtNonOption && !options.hasOption(t)) {
-                    cmd.addArg(t);
+            if (str.startsWith("-")) {
+                if (stopAtNonOption && !options.hasOption(str)) {
+                    cmd.addArg(str);
                     break;
                 }
 //                processOption(t, iterator);
                 ListIterator iter = iterator;
-                String arg = t;
                 //*********/
-                boolean hasOption = options.hasOption(arg);
 
                 // if there is no option throw an UnrecognisedOptionException
-                if (!hasOption)
+                if (!options.hasOption(str))
                     throw new UnrecognizedOptionException("Unrecognized option: " 
-                                                          + arg);
+                                                          + str);
                 
                 // get the option represented by arg
-                final Option opt = options.getOption(arg);
+                final Option opt = options.getOption(str);
 
                 // if the option is a required option remove the option from
                 // the requiredOptions list
@@ -222,7 +220,7 @@ public abstract class Parser_7 implements CommandLineParser{
             }
 
             // the value is an argument
-            cmd.addArg(t);
+            cmd.addArg(str);
 
             if (stopAtNonOption)
                 break;
