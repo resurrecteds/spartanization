@@ -119,14 +119,14 @@ public abstract class Parser_7 implements CommandLineParser{
         // initialise members
         this.options = options;
         // clear out the data in options in case it's been used before (CLI-71)
-        for (Object object : arguments) {
+        for (Object object : arguments)
 			((Option)object).clearValues();
-		}
+        
         cmd = new CommandLine();
         String str;
-        if (arguments == null) {
+        
+        if (arguments == null)
             arguments = new String[0];
-        }
 
         List tokenList = Arrays.asList(flatten(this.options, 
                                                arguments, 
@@ -138,15 +138,14 @@ public abstract class Parser_7 implements CommandLineParser{
             String t = (String) iterator.next();
 
             // the value is the double-dash
-            if ("--".equals(t)) {
+            if ("--".equals(t))
                 break;
-            }
 
             // the value is a single dash
             if ("-".equals(t)) {
-                if (stopAtNonOption) {
+                if (stopAtNonOption)
                     break;
-                }
+                
                 cmd.addArg(t);
                 continue;
             }
@@ -164,27 +163,24 @@ public abstract class Parser_7 implements CommandLineParser{
                 boolean hasOption = options.hasOption(arg);
 
                 // if there is no option throw an UnrecognisedOptionException
-                if (!hasOption) {
+                if (!hasOption)
                     throw new UnrecognizedOptionException("Unrecognized option: " 
                                                           + arg);
-                }
                 
                 // get the option represented by arg
                 final Option opt = options.getOption(arg);
 
                 // if the option is a required option remove the option from
                 // the requiredOptions list
-                if (opt.isRequired()) {
+                if (opt.isRequired())
                     requiredOptions.remove(opt.getKey());
-                }
 
                 // if the option is in an OptionGroup make that option the selected
                 // option of the group
                 OptionGroup group = options.getOptionGroup(opt);
                 if (group != null) {
-                    if (group.isRequired()) {
+                    if (group.isRequired())
                         requiredOptions.remove(group);
-                    }
 
                     group.setSelected(opt);
                 }
@@ -214,10 +210,9 @@ public abstract class Parser_7 implements CommandLineParser{
                     }
                 }
 
-                if ((opt.getValues() == null) && !opt.hasOptionalArg()) {
+                if ((opt.getValues() == null) && !opt.hasOptionalArg())
                     throw new MissingArgumentException("Missing argument for option:"
                                                        + opt.getKey());
-                }
 
 
                 // set the option on the command line
@@ -229,9 +224,8 @@ public abstract class Parser_7 implements CommandLineParser{
             // the value is an argument
             cmd.addArg(t);
 
-            if (stopAtNonOption){
+            if (stopAtNonOption)
                 break;
-            }
         }
         
         // eat the remaining tokens
@@ -239,9 +233,8 @@ public abstract class Parser_7 implements CommandLineParser{
             String str = (String) iterator.next();
 
             // ensure only one double-dash is added
-            if (!"--".equals(str)) {
+            if (!"--".equals(str))
                 cmd.addArg(str);
-            }
         }
 
         // TODO - remove this method too: // processProperties(properties);
@@ -254,9 +247,9 @@ public abstract class Parser_7 implements CommandLineParser{
 	                // get the value from the properties instance
 	                String value = properties.getProperty(option);
 	
-                    if (opt.hasArg() && (opt.getValues() == null || opt.getValues().length == 0)) {
+                    if (opt.hasArg() && (opt.getValues() == null || opt.getValues().length == 0))
                     	opt.addValueForProcessing(value);
-                    }                
+                    
 	                if (!value.toLowerCase().matches("yes|true|1")) {
 	                    // if the value is not yes, true or 1 then don't add the
 	                    // option to the CommandLine
