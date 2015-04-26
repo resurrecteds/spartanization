@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * <p><code>Parser_8</code> creates {@link CommandLine}s.</p>
@@ -32,16 +33,6 @@ import java.util.Properties;
  * @version $Revision: 551815 $
  */
 public abstract class Parser_8 implements CommandLineParser {
-
-    /** commandline instance */
-    private CommandLine cmd;
-
-    /** current Options */
-    private Options options;
-
-    /** list of required options strings */
-    private List requiredOptions;
-
     /**
      * <p>Subclasses must implement this method to reduce
      * the <code>arguments</code> that have been passed to the parse 
@@ -158,25 +149,22 @@ public abstract class Parser_8 implements CommandLineParser {
         throws ParseException
     {
         // initialise members
-        this.options = options;
 
         // clear out the data in options in case it's been used before (CLI-71)        
         List list = options.helpOptions();
         list.forEach(x -> ((Option)x).clearValues());
 
-        requiredOptions = options.getRequiredOptions();
-        cmd = new CommandLine();
-
-        
+        List requiredOptions = options.getRequiredOptions();
+        CommandLine cmd = new CommandLine();
 
         if (arguments == null)
             arguments = new String[0];
 
-        List tokenList = Arrays.asList(flatten(this.options, 
+        List tokenList = Arrays.asList(flatten(options, 
                                                arguments, 
                                                stopAtNonOption));
 
-        ListIterator<String> iterator = tokenList.listIterator();
+        ListIterator iterator = tokenList.listIterator();
         try {
 	        iterator.forEachRemaining(x -> {
 	        	String t = (String)x;
@@ -202,11 +190,8 @@ public abstract class Parser_8 implements CommandLineParser {
 	                }
 	                else
 	                {
-	                	// processOption method here:
-	                	boolean hasOption = options.hasOption(t);
-	
 	                    // if there is no option throw an UnrecognisedOptionException
-	                    if (!hasOption)
+	                    if (!options.hasOption(t))
 	                        throw new UnrecognizedOptionRuntimeException("Unrecognized option: " + t);
 	                    
 	                    // get the option represented by arg
@@ -238,7 +223,7 @@ public abstract class Parser_8 implements CommandLineParser {
 	                    {
 	                    	// loop until an option is found
 	                    	iterator.forEachRemaining(y -> {
-	                            String str = y;
+	                            String str = (String)y;
 	
 	                            // found an Option, not an argument
 	                            if (options.hasOption(str) && str.startsWith("-"))
@@ -288,9 +273,6 @@ public abstract class Parser_8 implements CommandLineParser {
         }
         
         // process each flattened token
-
-
-//        processProperties(properties);
         try {
 	        if (properties != null) {
 	        	Collections.list(properties.propertyNames()).forEach(x -> {
@@ -303,21 +285,12 @@ public abstract class Parser_8 implements CommandLineParser {
 		                // get the value from the properties instance
 		                String value = properties.getProperty(option);
 		
-		                if (opt.hasArg())
-		                {
-		                    if ((opt.getValues() == null)
-		                        || (opt.getValues().length == 0))
-		                    {
+		                if (opt.hasArg()) {
+		                    if (opt.getValues() == null || opt.getValues().length == 0)
 	                            opt.addValueForProcessing(value);
-		                    }
 		                }
-		                else if (!value.toLowerCase().matches("yes|true|1")) {
-		                    // if the value is not yes, true or 1 then don't add the
-		                    // option to the CommandLine
-	//						break;
+		                else if (!value.toLowerCase().matches("yes|true|1")) 
 		                	throw new BreakRuntimeException();
-						}
-		
 		                cmd.addOption(opt);
 		            }
 	        	});
@@ -326,72 +299,16 @@ public abstract class Parser_8 implements CommandLineParser {
         catch (BreakRuntimeException e) {
         	// Nothing to do here
         }
-        	
 
-//        checkRequiredOptions();
-     // if there are required options that have not been
-        // processsed
         if (requiredOptions.size() > 0)
         {
         	String buff = requiredOptions.size() > 1 ? "Missing required options:" : "Missing required option:";
             // loop through the required options
-        	requiredOptions.forEach(x -> {
-        		buff += x.toString();
-        	});
+        	buff += requiredOptions.stream().map(x -> x.toString()).collect(Collectors.joining(""));
         	
             throw new MissingOptionException(buff);
         }
 
         return cmd;
     }
-
-    /**
-     * <p>Sets the values of Options using the values in 
-     * <code>properties</code>.</p>
-     *
-     * @param properties The value properties to be processed.
-     */
-
-
-    /**
-     * <p>Throws a {@link MissingOptionException} if all of the
-     * required options are no present.</p>
-     *
-     * @throws MissingOptionException if any of the required Options
-     * are not present.
-     */
-//    private void checkRequiredOptions()
-//        throws MissingOptionException
-
-
-    /**
-     * <p>Process the argument values for the specified Option
-     * <code>opt</code> using the values retrieved from the 
-     * specified iterator <code>iter</code>.
-     *
-     * @param opt The current Option
-     * @param iter The iterator over the flattened command line
-     * Options.
-     *
-     * @throws ParseException if an argument value is required
-     * and it is has not been found.
-     */
-//    private void processArgs(Option opt, ListIterator iter)
-//        throws ParseException
-
-    /**
-     * <p>Process the Option specified by <code>arg</code>
-     * using the values retrieved from the specfied iterator
-     * <code>iter</code>.
-     *
-     * @param arg The String value representing an Option
-     * @param iter The iterator over the flattened command 
-     * line arguments.
-     *
-     * @throws ParseException if <code>arg</code> does not
-     * represent an Option
-     */
-//    private void processOption(String arg, ListIterator iter)
-//        throws ParseException
-
 }

@@ -260,45 +260,4 @@ public abstract class Parser_7 implements CommandLineParser{
 
         return cmd;
     }
-
-    /**
-     * <p>Sets the values of Options using the values in 
-     * <code>properties</code>.</p>
-     *
-     * @param properties The value properties to be processed.
-     */
-
-    /**
-     * <p>Throws a {@link MissingOptionException} if all of the
-     * required options are no present.</p>
-     *
-     * @throws MissingOptionException if any of the required Options
-     * are not present.
-     */
-
-    /**
-     * <p>Process the argument values for the specified Option
-     * <code>opt</code> using the values retrieved from the 
-     * specified iterator <code>iter</code>.
-     *
-     * @param opt The current Option
-     * @param iter The iterator over the flattened command line
-     * Options.
-     *
-     * @throws ParseException if an argument value is required
-     * and it is has not been found.
-     */
-
-    /**
-     * <p>Process the Option specified by <code>arg</code>
-     * using the values retrieved from the specfied iterator
-     * <code>iter</code>.
-     *
-     * @param arg The String value representing an Option
-     * @param iter The iterator over the flattened command 
-     * line arguments.
-     *
-     * @throws ParseException if <code>arg</code> does not
-     * represent an Option
-     */
 }
