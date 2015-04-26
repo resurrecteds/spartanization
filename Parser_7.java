@@ -225,7 +225,6 @@ public abstract class Parser_7 implements CommandLineParser{
                 cmd.addArg(str);
         }
 
-        // TODO - remove this method too: // processProperties(properties);
         if (properties != null) {
         	for (Object object : Collections.list(properties.propertyNames())) {
 				String option = (String)object;
@@ -238,11 +237,8 @@ public abstract class Parser_7 implements CommandLineParser{
                     if (opt.hasArg() && (opt.getValues() == null || opt.getValues().length == 0))
                     	opt.addValueForProcessing(value);
                     
-	                if (!value.toLowerCase().matches("yes|true|1")) {
-	                    // if the value is not yes, true or 1 then don't add the
-	                    // option to the CommandLine
+	                if (!value.toLowerCase().matches("yes|true|1"))
 						break;
-					}
 	
 	                cmd.addOption(opt);
 	            }
